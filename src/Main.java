@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class Main {
 	public static void main(String[] args) {
@@ -123,13 +124,56 @@ public class Main {
 
 		randomUsers.stream().filter(isUserAgeMoreThan18.negate()).forEach(System.out::println);
 
-		// ---------------------------------------------- STREAMS - MAP -------------------------------------------------------------
 		System.out.println("---------------------------------------------- STREAMS - MAP -------------------------------------------------------------");
 
 		randomUsers.stream().map(user -> user.getAge()).forEach(user -> System.out.println(user));
 		// randomUsers.stream().map(User::getAge).forEach(System.out::println); <-- Equivalente alla riga sopra
 		System.out.println("---------------------------------------------- STREAMS - MAP & FILTER -------------------------------------------------------------");
 		randomUsers.stream().filter(user -> user.getAge() < 18).map(user -> user.getName() + " - " + user.getAge()).forEach(System.out::println);
+
+		// ************************************************ COME TERMINARE GLI STREAM ************************************************************************
+		// Oltre al .forEach posso terminare gli Stream anche in maniere più utili, come ad esempio:
+		// - reduce, quando voglio 'ridurre' una collezione dati ad un singolo valore, magari effettuando un qualche calcolo
+		// - collect oppure toList, per ricondurre lo Stream ad una nuova lista
+		// - matching, tramite allMatch e anyMatch posso testare le collezione su una certa condizione
+
+		System.out.println("---------------------------------------------- STREAMS - REDUCE -------------------------------------------------------------");
+		int totale = randomUsers.stream()
+				.filter(user -> user.getAge() < 18)
+				.map(user -> user.getAge())
+				.reduce(0, (partialSum, currentAge) -> partialSum + currentAge);
+
+		System.out.println("Il totale è:" + totale);
+
+		System.out.println("---------------------------------------------- COME OTTENERE UNA LISTA DA UNO STREAM -------------------------------------------------------------");
+		List<Integer> listaEtàMinorenni = randomUsers.stream()
+				.filter(user -> user.getAge() < 18)
+				.map(user -> user.getAge())
+				.collect(Collectors.toList());
+
+		System.out.println(listaEtàMinorenni);
+
+		List<User> minorenni = randomUsers.stream()
+				.filter(user -> user.getAge() < 18)
+				.toList(); // .toList() è un'alternativa equivalente al collect però più compatta
+		System.out.println(minorenni);
+
+		List<String> nomiMinorenni = randomUsers.stream()
+				.filter(user -> user.getAge() < 18)
+				.map(user -> user.getName() + " " + user.getSurname())
+				.toList();
+		System.out.println(nomiMinorenni);
+
+		System.out.println("---------------------------------------------- STREAMS - ALLMATCH & ANYMATCH -------------------------------------------------------------");
+		// .some() e .every() di JS corrispondono a .anyMatch() e .allMatch() di Java
+		// Questi metodi ci consentono di controllare se ALMENO UN ELEMENTO (.some e .anyMatch) della lista passa una certa condizione, o se TUTTI GLI ELEMENTI (.every, .allMatch)
+		// passano una certa condizione
+
+		if (randomUsers.stream().allMatch(user -> user.getAge() >= 18)) System.out.println("tutti gli utenti sono maggiorenni");
+		else System.out.println("C'è qualche minorenne");
+
+		if (randomUsers.stream().anyMatch(user -> user.getAge() >= 99)) System.out.println("Esiste qualche utente con più di 98 anni");
+		else System.out.println("Sono tutti giovani");
 
 	}
 }
