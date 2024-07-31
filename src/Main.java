@@ -1,6 +1,8 @@
 import com.github.javafaker.Faker;
 import entities.User;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -174,6 +176,26 @@ public class Main {
 
 		if (randomUsers.stream().anyMatch(user -> user.getAge() >= 99)) System.out.println("Esiste qualche utente con più di 98 anni");
 		else System.out.println("Sono tutti giovani");
+
+		// -------------------------------------------------------------- DATE ----------------------------------------------------------------------------
+		System.out.println("-------------------------------------------------------------- DATE ----------------------------------------------------------------------------");
+		LocalDate today = LocalDate.now();
+		System.out.println(today);
+
+		System.out.println("La data di domani è: " + today.plusDays(1));
+		System.out.println("La data di ieri era: " + today.minusDays(1));
+		System.out.println("Il giorno di oggi prossimo anno: " + today.plusYears(1));
+
+		LocalDate yesterday = today.minusDays(1);
+		System.out.println(yesterday.isBefore(today));
+
+		LocalDateTime orario = LocalDateTime.now();
+		System.out.println(orario);
+
+		LocalDate date = LocalDate.parse("2024-02-02");
+		LocalDate date2 = LocalDate.of(2024, 2, 13);
+		System.out.println(date);
+		System.out.println(date2);
 
 	}
 }
